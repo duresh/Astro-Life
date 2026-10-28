@@ -1,0 +1,6 @@
+{
+  "name": "Astro-Life",
+  "description": "ජන්ම කේන්ද්‍රය, ග්‍රහ පිහිටීම්, යෝග, සහකරු සහ දරුවන් පිළිබඳ අනාවැකි සපයන ජ්‍යෝතිෂ මෘදුකාංගය - Vedic Astrology Birth Chart & Life Predictions",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
