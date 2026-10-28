@@ -37,15 +37,17 @@ fun BirthChartScreen(
 ) {
     var showInputForm by remember { mutableStateOf(activeChart == null) }
 
-    // Form inputs
+    val currentCal = remember { Calendar.getInstance() }
+
+    // Form inputs default to current time
     var nameInput by remember { mutableStateOf("") }
     var selectedGender by remember { mutableStateOf("MALE") }
-    var birthYear by remember { mutableIntStateOf(1984) }
-    var birthMonth by remember { mutableIntStateOf(9) }
-    var birthDay by remember { mutableIntStateOf(12) }
-    var birthHour by remember { mutableIntStateOf(8) }
-    var birthMinute by remember { mutableIntStateOf(50) }
-    var selectedCity by remember { mutableStateOf<CityLocation>(CityLocation.SRI_LANKAN_CITIES.first { it.englishName == "Matara" }) }
+    var birthYear by remember { mutableIntStateOf(currentCal.get(Calendar.YEAR)) }
+    var birthMonth by remember { mutableIntStateOf(currentCal.get(Calendar.MONTH) + 1) }
+    var birthDay by remember { mutableIntStateOf(currentCal.get(Calendar.DAY_OF_MONTH)) }
+    var birthHour by remember { mutableIntStateOf(currentCal.get(Calendar.HOUR_OF_DAY)) }
+    var birthMinute by remember { mutableIntStateOf(currentCal.get(Calendar.MINUTE)) }
+    var selectedCity by remember { mutableStateOf<CityLocation>(CityLocation.SRI_LANKAN_CITIES.first()) }
     var isCityDropdownExpanded by remember { mutableStateOf(false) }
     var selectedDetailTab by remember { mutableIntStateOf(0) }
     var savedSuccessMessage by remember { mutableStateOf<String?>(null) }
@@ -255,6 +257,35 @@ fun BirthChartScreen(
                                     Text(label, fontSize = 12.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
                                 }
                             }
+                        }
+
+                        // Quick Current Time Button
+                        OutlinedButton(
+                            onClick = {
+                                val c = Calendar.getInstance()
+                                birthYear = c.get(Calendar.YEAR)
+                                birthMonth = c.get(Calendar.MONTH) + 1
+                                birthDay = c.get(Calendar.DAY_OF_MONTH)
+                                birthHour = c.get(Calendar.HOUR_OF_DAY)
+                                birthMinute = c.get(Calendar.MINUTE)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("use_current_time_form_button"),
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.dp, GoldAccent.copy(alpha = 0.6f)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = GoldAccent.copy(alpha = 0.1f)
+                            )
+                        ) {
+                            Icon(Icons.Default.Schedule, contentDescription = null, tint = GoldAccent, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (isSinhala) "🕒 වත්මන් වේලාව යොදන්න (Use Current Time)" else "🕒 Set to Current Time",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
 
                         // --- CONVENIENT CALENDAR DATE PICKER BUTTON ---
@@ -957,7 +988,7 @@ private fun HousesAndPlanetsTable(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                Divider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f), thickness = 0.5.dp)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f), thickness = 0.5.dp)
             }
         }
     }

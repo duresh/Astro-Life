@@ -27,6 +27,32 @@ class ExampleRobolectricTest {
   }
 
   @Test
+  fun `birth chart generated using current time produces complete horoscope`() {
+    val now = Calendar.getInstance()
+    val chart = AstrologyCalculator.calculateBirthChart(
+      name = "වත්මන් කේන්ද්‍රය",
+      gender = "MALE",
+      year = now.get(Calendar.YEAR),
+      month = now.get(Calendar.MONTH) + 1,
+      day = now.get(Calendar.DAY_OF_MONTH),
+      hour = now.get(Calendar.HOUR_OF_DAY),
+      minute = now.get(Calendar.MINUTE),
+      locationName = "කොළඹ (Colombo)",
+      latitude = 6.9271,
+      longitude = 79.8612
+    )
+
+    assertNotNull(chart)
+    assertNotNull(chart.lagnaSign)
+    assertNotNull(chart.navamshaLagnaSign)
+    assertEquals(12, chart.houses.size)
+    assertEquals(9, chart.planetaryPositions.size)
+    assertEquals(9, chart.dashaPeriods.size)
+    assertNotNull(chart.vimsottariAnalysis)
+    assertNotNull(chart.lifeDestiny)
+  }
+
+  @Test
   fun `astrology calculator produces valid birth chart`() {
     val chart = AstrologyCalculator.calculateBirthChart(
       name = "ටෙස්ට් කේන්ද්‍රය",

@@ -93,7 +93,8 @@ class MainActivity : ComponentActivity() {
                                     isSinhala = isSinhala,
                                     onNavigateToCreateChart = { viewModel.setTab(1) },
                                     onSelectProfile = { profile -> viewModel.loadProfileIntoChart(profile) },
-                                    onNavigateToCalendar = { viewModel.setTab(2) }
+                                    onNavigateToCalendar = { viewModel.setTab(2) },
+                                    onUseCurrentTimeChart = { viewModel.generateCurrentTimeChartAndShow() }
                                 )
                                 1 -> BirthChartScreen(
                                     activeChart = activeChart,

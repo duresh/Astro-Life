@@ -61,21 +61,49 @@ class AstroViewModel(application: Application) : AndroidViewModel(application) {
             repository.seedInitialProfilesIfEmpty()
             _todayPanchanga.value = repository.getTodayPanchanga()
 
-            // Initialize default active chart with a sample profile
-            val sample = BirthProfile(
-                name = "මාතර උපත (1984.09.12)",
-                gender = "MALE",
-                birthYear = 1984,
-                birthMonth = 9,
-                birthDay = 12,
-                birthHour = 8,
-                birthMinute = 50,
-                locationName = "මාතර (Matara)",
-                latitude = 5.9549,
-                longitude = 80.5550
-            )
-            _activeChart.value = repository.calculateBirthChart(sample)
+            // Initialize default active chart using current time on first load as requested
+            loadCurrentTimeChart()
         }
+    }
+
+    fun loadCurrentTimeChart() {
+        val now = Calendar.getInstance()
+        val year = now.get(Calendar.YEAR)
+        val month = now.get(Calendar.MONTH) + 1
+        val day = now.get(Calendar.DAY_OF_MONTH)
+        val hour = now.get(Calendar.HOUR_OF_DAY)
+        val minute = now.get(Calendar.MINUTE)
+        val defaultCity = CityLocation.SRI_LANKAN_CITIES.first() // Colombo (or central location)
+
+        val minuteFormatted = if (minute < 10) "0$minute" else "$minute"
+        val hourFormatted = if (hour < 10) "0$hour" else "$hour"
+        val timeLabel = "$year.%02d.%02d $hourFormatted:$minuteFormatted".format(month, day)
+
+        val defaultName = if (_isSinhala.value) {
+            "වත්මන් කේන්ද්‍රය ($timeLabel)"
+        } else {
+            "Current Horoscope ($timeLabel)"
+        }
+
+        val profile = BirthProfile(
+            name = defaultName,
+            gender = "MALE",
+            birthYear = year,
+            birthMonth = month,
+            birthDay = day,
+            birthHour = hour,
+            birthMinute = minute,
+            locationName = if (_isSinhala.value) defaultCity.sinhalaName else defaultCity.englishName,
+            latitude = defaultCity.latitude,
+            longitude = defaultCity.longitude,
+            notes = if (_isSinhala.value) "වත්මන් වේලාව අනුව සැකසූ තත්කාල / ජන්ම කේන්ද්‍රය" else "Instantaneous horoscope based on current time"
+        )
+        _activeChart.value = repository.calculateBirthChart(profile)
+    }
+
+    fun generateCurrentTimeChartAndShow() {
+        loadCurrentTimeChart()
+        _currentTab.value = 1 // Switch to Chart view
     }
 
     fun toggleLanguage() {
